@@ -1,20 +1,20 @@
 def aStarAlgo(source, destination):
     # initial-config
-    openSet = set(source)
-    closedSet = set()
+    choices = set(source)
+    visited = set()
     dist = {}
     parent = {}
 
     dist[source] = 0
     parent[source] = source
     
-    while len(openSet) > 0 :
+    while len(choices) > 0 :
         curNode = None
 
         # find the node with the least distance from the source
-        for node in openSet:
-            if curNode == None or dist[node] + heuristicDist[node] < dist[curNode] + heuristicDist[curNode] :
-                curNode = node
+        for optionNode in choices:
+            if curNode == None or dist[optionNode] + heuristicDist[optionNode] < dist[curNode] + heuristicDist[curNode] :
+                curNode = optionNode
 
         # if we have reached the end, construct the path and stop
         if curNode == destination:
@@ -29,20 +29,20 @@ def aStarAlgo(source, destination):
         
         # exploring the neighbors of the current node similar to dijkstra's algorithm
         for (neighbor, weight) in adj[curNode] :
-            if neighbor not in openSet and neighbor not in closedSet :
+            if neighbor not in choices and neighbor not in visited :
                 parent[neighbor] = curNode
                 dist[neighbor] = dist[curNode] + weight
-                openSet.add(neighbor)
+                choices.add(neighbor)
             elif dist[neighbor] > dist[curNode] + weight :
                 parent[neighbor] = curNode
                 dist[neighbor] = dist[curNode] + weight
-                if neighbor in closedSet:
-                    closedSet.remove(neighbor)
-                    openSet.add(neighbor)
+                if neighbor in visited:
+                    visited.remove(neighbor)
+                    choices.add(neighbor)
         
         # we have explored all the neighbors of the current node
-        openSet.remove(curNode)
-        closedSet.add(curNode)
+        choices.remove(curNode)
+        visited.add(curNode)
     
     # if we reached here, then there is no path from the given source to the destination
     print("Path--- doesn't exist")

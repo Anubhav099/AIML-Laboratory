@@ -2,25 +2,38 @@ from sklearn.datasets import load_iris
 from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
 
-iris_dataset=load_iris()
-
-#display the iris dataset
-print("\n IRIS FEATURES \ TARGET NAMES: \n ", iris_dataset.target_names)
+iris_dataset = load_iris()
+print("\n IRIS FEATURES \ TARGET NAMES:", iris_dataset.target_names)
 for i in range(len(iris_dataset.target_names)):
-    print("\n[{0}]:[{1}]".format(i,iris_dataset.target_names[i]))
+    print("\n [{}]:[{}]".format(i,iris_dataset.target_names[i]))
 
-# print("\n IRIS DATA :\n",iris_dataset["data"])
-#split the data into training and testing data
-
-X_train, X_test, y_train, y_test = train_test_split(iris_dataset["data"], iris_dataset["target"], random_state=0)
-#train and fit the model
+x_train, x_test, y_train, y_test = train_test_split(iris_dataset.data, iris_dataset.target, random_state=0)
 kn = KNeighborsClassifier(n_neighbors=5)
-kn.fit(X_train, y_train)
-for i in range(len(X_test)):
-    x = X_test[i]
-    x_new = np.array([x])
-    prediction = kn.predict(x_new)
-    print("\nActual : {0} {1}, Predicted:{2} {3}".format(y_test[i], iris_dataset["target_names"][y_test[i]], prediction, iris_dataset["target_names"][ prediction]))
-print("\nTEST SCORE[ACCURACY]: {:.2f}\n".format(kn.score(X_test, y_test)))
+kn.fit(x_train, y_train)
+
+# x_test -> list of input features [][4]
+# y_test -> list of target output []
+for i in range(len(x_test)):
+    cur_row = x_test[i]
+    row_array = np.array([cur_row])
+    prediction = kn.predict(row_array) # 0, 1 or 2
+    print("\nActual: [{}] [{}]\nPredicted:{} {}".format(y_test[i], iris_dataset.target_names[y_test[i]], prediction, iris_dataset.target_names[prediction]))
+
+print("\nTEST SCORE[ACCURACY]: {:.2f}\n".format(kn.score(x_test, y_test)))
+
+
+
+''' 
+iris_dataset KEYS :
+['data', 'target', 'target_names']
+
+STEPS:
+1. Load the iris dataset
+2. Split the dataset into training and testing sets
+3. Create a KNN classifier
+4. Fit the model using the training sets
+5. Predict the output for the test dataset
+6. Print the actual and predicted values
+
+'''

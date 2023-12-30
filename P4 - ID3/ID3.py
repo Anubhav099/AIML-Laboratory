@@ -4,7 +4,7 @@ from numpy import log2 as log
 import pprint
 
 eps = np.finfo(float).eps
-df = pd.read_csv("D:\GitHUB\AIML-Lab\P4 - ID3\PlayTennis.csv")
+df = pd.read_csv("D:\\GitHUB\\AIML-Laboratory\\P4 - ID3\\PlayTennis.csv")
 
 def find_entropy(df):
     target_col = df.keys()[-1]   # get the target column name
@@ -18,7 +18,7 @@ def find_entropy(df):
         entropy += -fraction * np.log(fraction)
     
     return entropy
-
+    
 def find_entropy_attribute(df, attribute_name):
     target_col = df.keys()[-1]   # get the target column name
     target_variables = df[target_col].unique()  # get all unique values of the target column
@@ -92,33 +92,3 @@ def predict(test_instance, tree, default = None):
 test_instance = {'Outlook': 'Sunny', 'Temperature': 'Hot', 'Humidity': 'High', 'Wind': 'Weak'}
 predicted_label = predict(test_instance, tree)
 print("Predicted label for test instance:", predicted_label)
-
-
-
-
-
-
-
-
-
-
-# ------------- unrelated -------------
-print("\n\nEntropy of the dataset:", find_entropy(df))
-
-def all_yes_rows(df):
-    filtered_df = df[df['Play Tennis'] == 'Yes']
-    return filtered_df
-
-print(all_yes_rows(df)) # Print all the rows where label = "Yes"
-
-def countRows():
-    numRows = len(df)
-    return numRows
-
-print("No. of Rows in the dataset =",countRows())
-
-def countCols():
-    numCols = df.shape[1]
-    return numCols
-
-print("No. of Cols in the dataset =",countCols())

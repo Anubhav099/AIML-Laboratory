@@ -23,8 +23,8 @@ for _ in range(5000):
     delta_output = (y - output_layer_activation) * derivatives_sigmoid(output_layer_activation)
     delta_hidden_layer = delta_output.dot(output_weight.T) * derivatives_sigmoid(hidden_layer_activation)
 
-    output_weight += hidden_layer_activation.T.dot(delta_output) * 0.1
     hidden_weight += x.T.dot(delta_hidden_layer) * 0.1
+    output_weight += hidden_layer_activation.T.dot(delta_output) * 0.1
 
 print("Input:\n", x)
 print("Actual Output:\n", y)

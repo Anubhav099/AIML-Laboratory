@@ -4,7 +4,7 @@ class Graph:
         self.heuristicValue = heuristicValue
         self.sourceNode = sourceNode
         
-        self.status = {}
+        self.visited = {}
         self.parent = {}
         self.solutionGraph = {}
 
@@ -14,11 +14,11 @@ class Graph:
     def getNeighbors(self, curNode):
         return self.adj.get(curNode, [])
 
-    def getStatus(self, curNode):
-        return self.status.get(curNode, 0)
+    def getVisited(self, curNode):
+        return self.visited.get(curNode, False)
 
-    def setStatus(self,curNode, val):
-        self.status[curNode] = val
+    def setVisited(self, curNode, val):
+        self.visited[curNode] = val
 
     def getHeuristicValue(self, curNode):
         return self.heuristicValue.get(curNode, 0)
@@ -51,19 +51,18 @@ class Graph:
         print("PROCESSING NODE:", curNode)
         print("---------------")
 
-        if self.getStatus(curNode) != -1:
+        if not self.getVisited(curNode):
             minCost, childNodeList = self.computeMinimumCostChildNodes(curNode)
             self.setHeuristicValue(curNode, minCost)
-            self.setStatus(curNode, len(childNodeList))
             solved = True
             
         for childNode in childNodeList:
             self.parent[childNode] = curNode
-            if self.getStatus(childNode) != -1:
+            if not self.getVisited(childNode):
                 solved = False
 
         if solved:
-            self.setStatus(curNode, -1)
+            self.setVisited(curNode, True)
             self.solutionGraph[curNode] = childNodeList
 
         if curNode != self.sourceNode:
@@ -71,7 +70,7 @@ class Graph:
 
         if moreRecursiveCalls:
             for childNode in childNodeList:
-                self.setStatus(childNode, 0)
+                self.setVisited(childNode, False)
                 self.aoStar(childNode, True)
 
     def printSolution(self):

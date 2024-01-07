@@ -3,12 +3,18 @@ import matplotlib.pyplot as plt
 
 def local_regression(x0, X, Y, tau):
     # formulas:
-    # w(x, x0)  = e ^ ((x - x0)^2 / (-2*tau))
-    # beta(x0) = (X(transpose) * W * X)^-1 * X(transpose) * W * Y
-    # Prediction = beta(x0) * x0
+    # w  = e ^ ((x - x0)^2 / (-2*tau))
+    # beta = (X(transpose) * W * X)^-1 * X(transpose) * W * Y
+    # Prediction = beta * x0
 
     x0 = [1, x0]
     X = [[1, i] for i in X]
+    '''
+    diffX = []
+    for i in X:
+        diffX.append([1, i])
+    X = diffX
+    '''
     X = np.asarray(X)
 
     x_transpose_w = (X.T) * np.exp(np.sum((X - x0) ** 2, axis=1) / (-2 * tau)) # formula = tanspost(X) * exp(||x - orig_x||^2 / (-2*tau))
@@ -33,6 +39,7 @@ def draw(tau):
     plt.show()
 
 X = np.linspace(-3, 3, num=1000) # X -> [-3, -2.994, -2.988, ..., 2.988, 2.994, 3]
+# linspace = linear space               [[1,-3],[1,-2.994],[1, val]...]
 Y = np.log(np.abs(X ** 2 - 1) + .5) # Y = log(|X^2 - 1| + 0.5)
 domain = X # copy of original X
 

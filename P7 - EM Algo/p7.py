@@ -1,95 +1,44 @@
-import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.cluster import KMeans
-from sklearn import preprocessing
+from sklearn.mixture import GaussianMixture
 import sklearn.metrics as sm
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-l1 = [0, 1, 2]
-
-def rename(s):
-    l2 = []
-    for i in s:
-        if i not in l2:
-            l2.append(i)
-    for i in range(len(s)):
-        pos = l2.index(s[i])
-        s[i] = l1[pos]
-    return s
-
 iris = datasets.load_iris()
-print("\n IRIS FEATURES :\n", iris.feature_names)
-print("\n IRIS TARGET NAMES:\n", iris.target_names)
 
-# Store the inputs as a Pandas Dataframe and set the column names
 X = pd.DataFrame(iris.data)
-X.columns = ['Sepal_Length', 'Sepal_Width', 'Petal_Length', 'Petal_Width']
+X.columns = ['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+Y = pd.DataFrame(iris.target)
+Y.columns = ['Targets']
 
-y = pd.DataFrame(iris.target)
-y.columns = ['Targets']
+print(X)
+print(Y)
+colormap = np.array(['red', 'blue', 'black'])
 
-# Set the size of the plot
-plt.figure(figsize=(14, 7))
+plt.subplot(1,2,1)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[Y.Targets])
+plt.title('Real Clustering')
 
-# Create a colormap
-colormap = np.array(['red', 'lime', 'black'])
+model1 = KMeans(n_clusters=3)
+model1.fit(X)
 
-# Plot Sepal
-plt.subplot(1, 2, 1)
-plt.scatter(X.Sepal_Length, X.Sepal_Width, c=colormap[y.Targets], s=40)
-plt.title('Sepal')
-
-plt.subplot(1, 2, 2)
-plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[y.Targets], s=40)
-plt.title('Petal')
-
+plt.subplot(1,2,2)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[model1.labels_])
+plt.title('K Mean Clustering')
 plt.show()
+
+model2 = GaussianMixture(n_components=3) 
+model2.fit(X)
+
+plt.subplot(1,2,1)
+plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[model2.predict(X)])
+plt.title('EM Clustering')
+plt.show()
+
 print("Actual Target is:\n", iris.target)
-
-# K Means Cluster
-model = KMeans(n_clusters=3)
-model.fit(X)
-
-# Set the size of the plot
-plt.figure(figsize=(14, 7))
-
-# Plot the Original Classifications
-plt.subplot(1, 2, 1)
-plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[y.Targets], s=40)
-plt.title('Real Classification')
-
-# Plot the Models Classifications
-plt.subplot(1, 2, 2)
-plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[model.labels_], s=40)
-plt.title('K Mean Classification')
-
-plt.show()
-km = rename(model.labels_)
-print("\nWhat KMeans thought: \n", km)
-print("Accuracy of KMeans is ", sm.accuracy_score(y, km))
-print("Confusion Matrix for KMeans is \n", sm.confusion_matrix(y, km))
-
-# The GaussianMixture scikit-learn class can be used to model this problem
-# and estimate the parameters of the distributions using the expectation-maximization algorithm.
-
-scaler = preprocessing.StandardScaler()
-scaler.fit(X)
-xsa = scaler.transform(X)
-xs = pd.DataFrame(xsa, columns=X.columns)
-
-from sklearn.mixture import GaussianMixture
-
-gmm = GaussianMixture(n_components=3)
-gmm.fit(xs)
-y_cluster_gmm = gmm.predict(xs)
-
-plt.subplot(1, 2, 1)
-plt.scatter(X.Petal_Length, X.Petal_Width, c=colormap[y_cluster_gmm], s=40)
-plt.title('GMM Classification')
-
-plt.show()
-em = rename(y_cluster_gmm)
-print("\nWhat EM thought: \n", em)
-print("Accuracy of EM is ", sm.accuracy_score(y, em))
-print("Confusion Matrix for EM is \n", sm.confusion_matrix(y, em))
+print("K Means:\n",model1.labels_)
+print("EM:\n",model2.predict(X))
+print("Accuracy of KMeans is ",sm.accuracy_score(Y,model1.labels_))
+print("Accuracy of EM is ",sm.accuracy_score(Y, model2.predict(X)))
